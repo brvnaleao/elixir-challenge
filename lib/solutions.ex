@@ -20,56 +20,22 @@ defmodule Solutions do
   """
   def get_two_sum_index(integers_list, target) do
 
-    new_list = integers_list
-      |> Enum.uniq
+    result =
+      Enum.zip(0..length(integers_list), integers_list)
+      |> Enum.reduce_while([], fn {x, y}, acc ->
 
-    result = new_list
-      |> Enum.map(fn x ->
-          List.delete(new_list, x)
-          |> filter_numbers(x, target)
-          |> List.flatten
-          end)
-      |> Enum.filter(fn x -> is_list(x)
-          and length(x) == 2 and is_integer(Enum.at(x, -1)) end)
-      |> Enum.map(fn x -> Enum.sort(x) end)
-      |> Enum.uniq
-      |> Enum.map(fn x ->
-          get_index( x, new_list)
-        end)
-      |> Enum.flat_map(fn x when is_list(x) -> x; x -> [x] end)
+        aux = target - x
+        case Enum.find_index(integers_list,fn x -> x == aux end) do
+          nil -> {:cont, acc}
+          aux -> {:halt, [y, aux]}
+          _ -> {:cont, acc}
+        end
+
+      end)
+      |> Enum.map(fn x -> x - 1 end)
+
     result
   end
 
-  defp get_index(items, integers_list) do
-
-    first_item = Enum.at(items, -1)
-    second_item = Enum.at(items, -2)
-
-    list_with_indexes =
-      create_indexes(integers_list)
-      |> Enum.filter(fn x ->
-          list = Tuple.to_list(x)
-          get_list_element(list, -1) == first_item
-          || get_list_element(list, -1) == second_item
-        end)
-      |> Enum.map(fn x ->
-        Tuple.to_list(x)
-        |> get_list_element(-2)
-      end)
-      list_with_indexes
-  end
-
-  defp create_indexes (list) do
-    Enum.zip(0..length(list), list)
-  end
-
-  defp get_list_element(list, position) do
-    Enum.at(list, position)
-  end
-
-  defp filter_numbers(list, num, expected) do
-    item = Enum.filter(list, fn x -> x + num == expected
-    end)
-    [num, item]
-  end
+  
 end
