@@ -7,13 +7,11 @@ defmodule Solutions do
   """
   def get_words_occurrence(sentence) do
     sentence
-    |> String.downcase()
     |> String.split()
     |> Enum.reduce(Map.new(), &get_each_word_number/2)
   end
 
   defp get_each_word_number(word, map) do
-    IO.inspect(map)
     Map.update(map, word, 1, fn x -> 1 + x end)
   end
 
@@ -41,12 +39,10 @@ defmodule Solutions do
     end)
   end
 
-
   defp get_index(items, list) do
 
     first_item = Enum.at(items, -1)
     second_item = Enum.at(items, -2)
-
     arr =
       Enum.zip(0..length(list), list)
       |> Enum.filter(fn x ->
@@ -68,5 +64,4 @@ defmodule Solutions do
     it = Enum.filter(list, fn x -> x + num == expected end)
     [num, it]
   end
-
 end
