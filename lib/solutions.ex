@@ -19,15 +19,13 @@ defmodule Solutions do
   [4, 5]
   """
   def get_two_sum_index(integers_list, target) do
-    arr =
-      Enum.map integers_list, fn x ->
-        List.delete(integers_list, x)
-        |> sum_numbers(x, target)
-        |> List.flatten
-
-      end
     arr_filtered =
-      Enum.filter(arr, fn x -> is_list(x) and length(x) > 1 end)
+      Enum.map(integers_list, fn x ->
+        List.delete(integers_list, x)
+        |> filter_numbers(x, target)
+        |> List.flatten
+        end)
+      |> Enum.filter(fn x -> is_list(x) and length(x) > 1 end)
       |> Enum.map(fn x -> Enum.sort(x) end)
       |> Enum.uniq
 
@@ -37,29 +35,36 @@ defmodule Solutions do
     end)
   end
 
-  defp get_index(items, list) do
+  defp get_index(items, integers_list) do
 
     first_item = Enum.at(items, -1)
     second_item = Enum.at(items, -2)
-    arr =
-      Enum.zip(0..length(list), list)
-      |> Enum.filter(fn x ->
-        list = Tuple.to_list(x)
-        get_el_list(list, -1) == first_item || get_el_list(list, -1) == second_item
-    end)
 
-    Enum.map(arr, fn x ->
-      Tuple.to_list(x)
-      |> get_el_list(-2)
-    end)
+    list_with_indexes =
+      create_indexes(integers_list)
+      |> Enum.filter(fn x ->
+          list = Tuple.to_list(x)
+          get_list_element(list, -1) == first_item || get_list_element(list, -1) == second_item
+        end)
+      |> Enum.map(fn x ->
+        Tuple.to_list(x)
+        |> get_list_element(-2)
+      end)
+      list_with_indexes
   end
 
-  defp get_el_list(list, position) do
+  defp create_indexes (list) do
+    Enum.zip(0..length(list), list)
+  end
+
+  defp get_list_element(list, position) do
     Enum.at(list, position)
   end
 
-  defp sum_numbers(list, num, expected) do
-    it = Enum.filter(list, fn x -> x + num == expected end)
-    [num, it]
+  defp filter_numbers(list, num, expected) do
+    item = Enum.filter(list, fn x ->
+      x + num == expected
+    end)
+    [num, item]
   end
 end
