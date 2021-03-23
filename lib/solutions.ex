@@ -23,7 +23,7 @@ defmodule Solutions do
     new_list = integers_list
       |> Enum.uniq
 
-    new_list
+    result = new_list
       |> Enum.map(fn x ->
           List.delete(new_list, x)
           |> filter_numbers(x, target)
@@ -36,7 +36,8 @@ defmodule Solutions do
       |> Enum.map(fn x ->
           get_index( x, new_list)
         end)
-      |> Enum.each(fn x -> IO.inspect(x) end)
+      |> Enum.flat_map(fn x when is_list(x) -> x; x -> [x] end)
+    result
   end
 
   defp get_index(items, integers_list) do
