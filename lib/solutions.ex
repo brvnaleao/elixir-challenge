@@ -29,13 +29,14 @@ defmodule Solutions do
           |> filter_numbers(x, target)
           |> List.flatten
           end)
-      |> Enum.filter(fn x -> is_list(x) and length(x) > 1 end)
+      |> Enum.filter(fn x -> is_list(x)
+          and length(x) == 2 and is_integer(Enum.at(x, -1)) end)
       |> Enum.map(fn x -> Enum.sort(x) end)
       |> Enum.uniq
-      |> Enum.each(fn x ->
+      |> Enum.map(fn x ->
           get_index( x, new_list)
-          |> IO.inspect
-      end)
+        end)
+      |> Enum.each(fn x -> IO.inspect(x) end)
   end
 
   defp get_index(items, integers_list) do
@@ -47,7 +48,8 @@ defmodule Solutions do
       create_indexes(integers_list)
       |> Enum.filter(fn x ->
           list = Tuple.to_list(x)
-          get_list_element(list, -1) == first_item || get_list_element(list, -1) == second_item
+          get_list_element(list, -1) == first_item
+          || get_list_element(list, -1) == second_item
         end)
       |> Enum.map(fn x ->
         Tuple.to_list(x)
@@ -65,8 +67,7 @@ defmodule Solutions do
   end
 
   defp filter_numbers(list, num, expected) do
-    item = Enum.filter(list, fn x ->
-      x + num == expected
+    item = Enum.filter(list, fn x -> x + num == expected
     end)
     [num, item]
   end
