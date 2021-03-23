@@ -19,20 +19,23 @@ defmodule Solutions do
   [4, 5]
   """
   def get_two_sum_index(integers_list, target) do
-    arr_filtered =
-      Enum.map(integers_list, fn x ->
-        List.delete(integers_list, x)
-        |> filter_numbers(x, target)
-        |> List.flatten
-        end)
+
+    new_list = integers_list
+      |> Enum.uniq
+
+    new_list
+      |> Enum.map(fn x ->
+          List.delete(new_list, x)
+          |> filter_numbers(x, target)
+          |> List.flatten
+          end)
       |> Enum.filter(fn x -> is_list(x) and length(x) > 1 end)
       |> Enum.map(fn x -> Enum.sort(x) end)
       |> Enum.uniq
-
-    Enum.each(arr_filtered, fn x ->
-      get_index( x, integers_list)
-      |> IO.inspect
-    end)
+      |> Enum.each(fn x ->
+          get_index( x, new_list)
+          |> IO.inspect
+      end)
   end
 
   defp get_index(items, integers_list) do
