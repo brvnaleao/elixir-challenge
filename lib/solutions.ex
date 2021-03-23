@@ -8,11 +8,9 @@ defmodule Solutions do
   def get_words_occurrence(sentence) do
     sentence
     |> String.split()
-    |> Enum.reduce(Map.new(), &get_each_word_number/2)
-  end
-
-  defp get_each_word_number(word, map) do
-    Map.update(map, word, 1, fn x -> 1 + x end)
+    |> Enum.reduce(Map.new(), fn(word, map) ->
+      Map.update(map, word, 1, fn x -> 1 + x end)
+    end)
   end
 
   @doc """
